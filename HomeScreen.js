@@ -13,7 +13,7 @@ const HomeScreen = ({ navigation }) => {
         const response = await axios.post('https://task.clikzopdevp.com/get-lead', {}, {
           headers: { token }
         });
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setLeads(response.data.data);
       } catch (error) {
         console.error(error);
@@ -25,9 +25,9 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View>
-      <Text>States</Text>
+      <Text>Leads</Text>
       {leads.map((state, index) => (
-        <Text key={index}>{state.state}</Text>
+        <Text key={index}>Lead name : {state.name}</Text>
       ))}
       <Button title="Insert Lead" onPress={() => navigation.navigate('InsertLead')} />
     </View>
