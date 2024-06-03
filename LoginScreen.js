@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -6,22 +6,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = ({ navigation }) => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
-  
+
+  useEffect(() => {
+    checkAutoLogin();
+  }, []);
+
+  const checkAutoLogin = async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      navigation.navigate('Home');
+    }
+  };
+
   const handleLogin = async () => {
     try {
       const formData = new FormData();
       formData.append('mobile', mobile);
       formData.append('password', password);
-  
+
       const response = await axios.post('https://task.clikzopdevp.com/login.php', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      var data = response.data.data;
-      const token  = data.token;
-  
+      const data = response.data.data;
+      const token = data.token;
+
       if (token) {
         await AsyncStorage.setItem('userToken', token);
         navigation.navigate('Home');
@@ -33,7 +44,6 @@ const LoginScreen = ({ navigation }) => {
       Alert.alert('Login Error', 'An error occurred while logging in');
     }
   };
-  
 
   return (
     <View>
